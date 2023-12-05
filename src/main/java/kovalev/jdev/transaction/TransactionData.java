@@ -1,4 +1,4 @@
-package kovalev.jdev;
+package kovalev.jdev.transaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
