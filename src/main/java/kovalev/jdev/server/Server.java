@@ -5,6 +5,8 @@ import kovalev.jdev.config.Config;
 import kovalev.jdev.transaction.Response;
 import kovalev.jdev.transaction.TransactionData;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -12,8 +14,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class Server implements Runnable {
-    private static final List<Integer> list = new CopyOnWriteArrayList<>();
+
+    @Getter
+    private final List<Integer> list = new CopyOnWriteArrayList<>();
     private final Lock lock = new ReentrantLock();
 
     private final int minDelay = Integer.parseInt(Config.getConfig().get("server").get("from"));
@@ -26,9 +31,7 @@ public class Server implements Runnable {
     public void fillList(TransactionData transactionData){
         lock.lock();
         try {
-            int timeToSleep = (int) (Math.random() * (maxDelay - minDelay) + minDelay);
-            System.out.println("The server sends a response with a delay = " + timeToSleep);
-            Thread.sleep(timeToSleep);
+            sleeping();
 
             list.add(transactionData.getNumber());
             System.out.println(list);
@@ -42,7 +45,13 @@ public class Server implements Runnable {
         }
     }
 
-    private void sendResponse() throws InterruptedException, ExecutionException {
+    public void sleeping() throws InterruptedException {
+        int timeToSleep = (int) (Math.random() * (maxDelay - minDelay) + minDelay);
+        System.out.println("The SERVER sends a response with a delay = " + timeToSleep);
+        Thread.sleep(timeToSleep);
+    }
+
+    public void sendResponse() throws InterruptedException, ExecutionException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Response response = new Response(client, new TransactionData(list.size()));
         Future<Boolean> future = executorService.submit(response);

@@ -6,32 +6,33 @@ import kovalev.jdev.transaction.Request;
 import kovalev.jdev.transaction.TransactionData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Client implements Runnable {
 
+    @Getter
     private final AtomicInteger accumulator = new AtomicInteger();
 
+    @Getter
     private int n;
 
     private final int minDelay = Integer.parseInt(Config.getConfig().get("client").get("from"));
     private final int maxDelay = Integer.parseInt(Config.getConfig().get("client").get("to"));
 
-    private static List<Integer> numbersList;
-
-    private final Lock lock = new ReentrantLock();
+    @Getter
+    private List<Integer> numbersList;
 
     private Server server = new Server(this);
 
+    @Getter
     private AtomicInteger counter;
 
     public Client(int n) {
@@ -44,7 +45,7 @@ public class Client implements Runnable {
         TransactionData transactionData;
         try {
             int timeToSleep = (int) (Math.random() * (maxDelay - minDelay) + minDelay);
-            System.out.println("The client sends the request with a delay = " + timeToSleep);
+            System.out.println("The CLIENT sends the request with a delay = " + timeToSleep);
             Thread.sleep(timeToSleep);
 
             transactionData = getRandomNumberFromList();
@@ -72,13 +73,8 @@ public class Client implements Runnable {
     }
 
     public void accumulate(TransactionData transactionData) {
-        lock.lock();
-        try {
-            counter.incrementAndGet();
-            accumulator.addAndGet(transactionData.getNumber());
-        } finally {
-            lock.unlock();
-        }
+        counter.incrementAndGet();
+        accumulator.addAndGet(transactionData.getNumber());
     }
 
     private List<Integer> fillNumbers(int n) {
