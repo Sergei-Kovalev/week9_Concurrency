@@ -1,0 +1,7 @@
+server:
+  from: '100'
+  to: '1000'
+
+client:
+  from: '100'
+  to: '500'
