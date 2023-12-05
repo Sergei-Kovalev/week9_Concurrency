@@ -9,16 +9,12 @@ public class Server {
     private static final List<Integer> list = new CopyOnWriteArrayList<>();
     private final Lock lock = new ReentrantLock();
 
-    public int fillList(TransactionData transactionData){
+    public TransactionData fillList(TransactionData transactionData){
         lock.lock();
         try {
             int timeToSleep = (int) (Math.random() * 900 + 100);
-
-            System.out.println("Server sends response with delay = " + timeToSleep);
-
-
+            System.out.println("The server sends a response with a delay = " + timeToSleep);
             Thread.sleep(timeToSleep);
-
 
             list.add(transactionData.getNumber());
             System.out.println(list);
@@ -27,6 +23,6 @@ public class Server {
         } finally {
             lock.unlock();
         }
-        return list.size();
+        return new TransactionData(list.size());
     }
 }

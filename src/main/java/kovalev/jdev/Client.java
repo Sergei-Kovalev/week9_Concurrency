@@ -30,12 +30,8 @@ public class Client {
         TransactionData transactionData;
         try {
             int timeToSleep = (int) (Math.random() * 400 + 100);
-
-            System.out.println("Client send request with delay = " + timeToSleep);
-
-
+            System.out.println("The client sends the request with a delay = " + timeToSleep);
             Thread.sleep(timeToSleep);
-
 
             int randomIndex = (int) (Math.random() * n.get());
             Integer numberFromList = numbersList.get(randomIndex);
@@ -56,11 +52,9 @@ public class Client {
 
     private static List<Integer> fillNumbers(int n) {
         List<Integer> list = new CopyOnWriteArrayList<>();
-
         for (int i = 1; i <= n; i++) {
             list.add(i);
         }
-
         return list;
     }
 }

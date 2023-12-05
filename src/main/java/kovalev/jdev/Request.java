@@ -10,11 +10,12 @@ public class Request implements Callable<TransactionData> {
     private Client client;
     private Server server;
 
+
     @Override
     public TransactionData call() {
-        TransactionData requestData = client.remove();
-        int serverListSize = server.fillList(requestData);
+        TransactionData transactionData = client.remove();
+        transactionData = server.fillList(transactionData);
 
-        return new TransactionData(serverListSize);
+        return transactionData;
     }
 }
